@@ -44,13 +44,12 @@ def user_login(request):
         if user is not None:
             login(request, user)
             messages.success(request, f'Вітаємо, {username}! Ви успішно увійшли.')
-            return redirect('home')  # ПОВЕРТАЄМО redirect, а не рядок
+            return redirect('home')  
         else:
             messages.error(request, 'Неправильне ім\'я користувача або пароль')
-            return render(request, 'quizzes/login.html')  # ПОВЕРТАЄМО render, а не рядок
+            return render(request, 'quizzes/login.html')  
     
-    # Для GET запиту
-    return render(request, 'quizzes/login.html')  # ПОВЕРТАЄМО render, а не рядок
+    return render(request, 'quizzes/login.html')
 
 def user_logout(request):
     logout(request)
