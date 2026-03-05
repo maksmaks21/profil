@@ -17,3 +17,87 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
+
+
+/* Круглий таймер */
+#quiz-timer-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.circular-timer {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 5px;
+}
+
+.timer-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.timer-bg {
+    fill: none;
+    stroke: #e0e0e0;
+    stroke-width: 8;
+}
+
+.timer-progress {
+    fill: none;
+    stroke: #4CAF50;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s;
+}
+
+.timer-text {
+    transform: rotate(90deg);
+    font-size: 12px;
+    font-weight: bold;
+    fill: #333;
+    dominant-baseline: middle;
+}
+
+/* Зміна кольору при малому часі */
+.timer-progress.warning {
+    stroke: #ff9800;
+}
+
+.timer-progress.danger {
+    stroke: #f44336;
+}
+
+/* Адаптація для мобільних */
+@media (max-width: 768px) {
+    #quiz-timer-container {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .circular-timer {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .timer-text {
+        font-size: 10px;
+    }
+}

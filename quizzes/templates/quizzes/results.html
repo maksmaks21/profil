@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Результати - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <!-- Головна картка результату -->
+            <div class="card text-center mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Вікторина завершена!</h3>
+                </div>
+                <div class="card-body">
+                    <i class="bi bi-trophy" style="font-size: 5rem; color: gold;"></i>
+                    
+                    <h1 class="display-1 mt-3">{{ score }}</h1>
+                    <p class="lead">балів</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h3>{{ correct_answers }}</h3>
+                                    <p class="text-muted">Правильних відповідей</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h3>{{ total_questions }}</h3>
+                                    <p class="text-muted">Всього питань</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if rank %}
+                        <div class="alert alert-info mt-4">
+                            <h4>Ви зайняли {{ rank }} місце!</h4>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Таблиця результатів -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Рейтинг учасників</h4>
+                </div>
+                <div class="card-body">
+                    {% if all_sessions %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Учасник</th>
+                                    <th>Бали</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in all_sessions %}
+                                    <tr {% if s.id == session.id %}class="table-success"{% endif %}>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <i class="bi bi-person-circle"></i>
+                                            {{ s.user.username }}
+                                        </td>
+                                        <td><strong>{{ s.score }}</strong></td>
+                                        <td>{{ s.completed_at|date:"d.m.Y H:i" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-center">Поки що немає результатів інших учасників</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Кнопки дій -->
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house"></i> На головну
+                </a>
+                <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-info-circle"></i> Про вікторину
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

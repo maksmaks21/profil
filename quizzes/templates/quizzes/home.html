@@ -1,96 +1,105 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Шапка сайту -->
+<div class="header text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; margin-bottom: 40px;">
+    <div class="container">
+        <h1 class="display-4">Онлайн-вікторина</h1>
+        <p class="lead">Перевір свої знання та дізнайся більше!</p>
+        {% if not user.is_authenticated %}
+            <div class="mt-4">
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">
+                    <i class="bi bi-person-plus"></i> Реєстрація
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-box-arrow-in-right"></i> Вхід
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
+<!-- Повідомлення -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    <!-- Шапка сайту -->
-    <div class="header text-center">
-        <div class="container">
-            <h1 class="display-4">Онлайн-вікторина</h1>
-            <p class="lead">Перевір свої знання та дізнайся більше!</p>
+<!-- Список вікторин -->
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2>Популярні вікторини</h2>
+            <p class="text-muted">Всього вікторин: {{ quizzes.count }}</p>
         </div>
     </div>
 
-    <!-- Головний контент -->
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h2>Популярні вікторини</h2>
-                <p>Виберіть вікторину</p>
-            </div>
-        </div>
-
-        <div class="row">
-            {% if quizzes %}
-                <!-- Перебираємо всі вікторини -->
-                {% for quiz in quizzes %}
-                    <div class="col-md-4">
-                        <div class="card quiz-card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ quiz.title }}</h5>
-                                <p class="card-text">{{ quiz.description|truncatechars:100 }}</p>
-                                <p class="text-muted small">
-                                    Створено: {{ quiz.created_at|date:"d.m.Y" }}
-                                </p>
-                                <a href="#" class="btn btn-primary">Почати вікторину</a>
+    <div class="row">
+        {% if quizzes %}
+            {% for quiz in quizzes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card quiz-card h-100" style="transition: transform 0.3s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.title }}</h5>
+                            <p class="card-text">{{ quiz.description|truncatechars:100 }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-question-circle"></i> {{ quiz.questions.count }} питань
+                                </small>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> 
+                                    {% if quiz.has_time_limit %}
+                                        {{ quiz.minutes }}хв
+                                    {% else %}
+                                        ∞
+                                    {% endif %}
+                                </small>
                             </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-person"></i> {{ quiz.creator.username|default:"Анонім" }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> {{ quiz.created_at|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                            
+                            <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-primary w-100 mt-3">
+                                <i class="bi bi-play-fill"></i> Почати
+                            </a>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <!-- Якщо вікторин немає -->
-                <div class="col-12 text-center">
-                    <div class="alert alert-info">
-                        Поки що немає вікторин. Створіть першу вікторину!
-                    </div>
                 </div>
-            {% endif %}
-        </div>
-
-        <!-- Кнопки для реєстрації/входу (тимчасово) -->
-        <div class="row mt-5">
+            {% endfor %}
+        {% else %}
             <div class="col-12 text-center">
-                <h3>Приєднуйтесь до спільноти!</h3>
-                {% if user.is_authenticated %}
-                    <div class="alert alert-success">
-                        <p class="mb-2"> congratulations <strong>{{ user.username }}</strong>!</p>
-                        <a href="{% url 'logout' %}" class="btn btn-outline-danger">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a>
-                    </div>
-
-                {% else %}
-                <a href="{% url 'register' %}" class="btn btn-success btn-lg me-2">
-                    <i class="bi bi-person-plus"></i> Register
-                </a>
-                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
-                    <i class="bi bi-box-arrow-right"></i> Exit
-                </a>
-
-                    
-                {% endif %} 
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Поки що немає вікторин. 
+                    {% if user.is_authenticated %}
+                        <a href="#" class="alert-link">Створіть першу вікторину!</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="alert-link">Увійдіть</a>, щоб створити вікторину.
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
+</div>
 
-    <!-- Футер -->
-    <footer class="bg-light text-center py-3 mt-5">
-        <div class="container">
-            <p class="text-muted mb-0">
-                &copy; 2026 Онлайн-вікторина. Всі права захищені. вірим
-            </p>
-        </div>
-    </footer>
-
-    <!-- Системні повідомлення -->
-    {% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+<!-- Футер -->
+<footer class="bg-light text-center py-3 mt-5">
+    <div class="container">
+        <p class="text-muted mb-0">
+            &copy; {% now "Y" %} Онлайн-вікторина. Всі права захищені. вірим)
+        </p>
     </div>
-{% endif %}
+</footer>
 {% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Профіль {{ user.username }} - Онлайн-вікторина{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Заголовок профілю -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
+                    <h2 class="mt-2">{{ user.username }}</h2>
+                    <p class="lead">{{ user.email }}</p>
+                    <p class="small">Зареєстрований: {{ user.date_joined|date:"d.m.Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="display-4">{{ total_quizzes }}</h3>
+                    <p class="text-muted">Створено вікторин</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="display-4">0</h3>
+                    <p class="text-muted">Пройдено вікторин</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="display-4">0</h3>
+                    <p class="text-muted">Всього балів</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Мої вікторини -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Мої вікторини</h4>
+                    <a href="#" class="btn btn-light btn-sm">
+                        <i class="bi bi-plus-circle"></i> Створити нову
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if user_quizzes %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Назва</th>
+                                        <th>Дата створення</th>
+                                        <th>Статус</th>
+                                        <th>Дії</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for quiz in user_quizzes %}
+                                        <tr>
+                                            <td>{{ quiz.title }}</td>
+                                            <td>{{ quiz.created_at|date:"d.m.Y H:i" }}</td>
+                                            <td>
+                                                {% if quiz.is_active %}
+                                                    <span class="badge bg-success">Активна</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Неактивна</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            <p class="mb-2">У вас ще немає створених вікторин</p>
+                            <a href="#" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Створити першу вікторину
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Історія результатів -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Історія результатів</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-secondary text-center">
+                        <i class="bi bi-clock-history"></i> Тут буде історія ваших результатів
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

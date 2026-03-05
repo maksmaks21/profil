@@ -15,6 +15,21 @@
 </head>
 <body>
     {% include 'menu.html' %}
+    
+    <!-- Контейнер для круглого таймера (буде видно тільки під час гри) -->
+    <div id="quiz-timer-container" style="display: none;">
+        <div class="circular-timer">
+            <svg class="timer-svg" viewBox="0 0 100 100">
+                <!-- Фонове коло -->
+                <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                <!-- Прогрес-коло -->
+                <circle class="timer-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="0"></circle>
+                <!-- Текст всередині -->
+                <text class="timer-text" x="50" y="50" text-anchor="middle" dy="0.3em">--:--</text>
+            </svg>
+        </div>
+    </div>
+    
     <main>
     {% block content %}
         
@@ -22,6 +37,7 @@
     </main>
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script src="{% static 'js/timer.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} - Питання {{ question_index|add:1 }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Прогрес-бар -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Питання {{ question_index|add:1 }} з {{ total_questions }}</span>
+                        <span class="text-primary" id="timer">Час: --:--</span>
+                    </div>
+                    <div class="progress">
+                        {% with current=question_index|add:1 %}
+                        <div id="main-progress-bar" class="progress-bar bg-success" role="progressbar" 
+                        data-width="{% widthratio current total_questions 100 %}"
+                        aria-valuenow="{{ current }}" 
+                        aria-valuemin="0" 
+                        aria-valuemax="{{ total_questions }}">
+                    </div>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Питання -->
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{ question.text }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Інформація про час -->
+                    {% if quiz.has_time_limit %}
+                        <div class="alert alert-info text-center" id="time-info">
+                            <i class="bi bi-clock"></i> 
+                            Загальний час на вікторину: 
+                            {% if quiz.hours > 0 %}{{ quiz.hours }} год {% endif %}
+                            {% if quiz.minutes > 0 %}{{ quiz.minutes }} хв {% endif %}
+                            {% if quiz.seconds > 0 %}{{ quiz.seconds }} сек {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-secondary text-center">
+                            <i class="bi bi-clock"></i> Без обмеження часу
+                        </div>
+                    {% endif %}
+
+                    <!-- Варіанти відповідей -->
+                    <div class="answers-container mt-4">
+                        {% for answer in question.answers.all %}
+                            <div class="mb-3">
+                                <button class="btn btn-outline-primary w-100 answer-btn" 
+                                        data-answer-id="{{ answer.id }}"
+                                        style="padding: 15px; text-align: left;">
+                                    {{ answer.text }}
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Приховані дані для JavaScript -->
+<input type="hidden" id="question-id" value="{{ question.id }}">
+<input type="hidden" id="has-time-limit" value="{% if question.quiz.has_time_limit %}true{% else %}false{% endif %}">
+<input type="hidden" id="total-seconds" value="{{ quiz.get_total_seconds|default:0 }}">
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+<input type="hidden" id="next-question-url" value="{% if question_index|add:1 < total_questions %}{% url 'play_question' quiz.id question_index|add:1 %}{% endif %}">
+<input type="hidden" id="results-url" value="{% url 'quiz_results' session.id %}">
+<input type="hidden" id="submit-answer-url" value="{% url 'submit_answer' %}">
+
+<!-- Модальне вікно для результату відповіді -->
+<div class="modal fade" id="answerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="answerModalHeader">
+                <h5 class="modal-title" id="answerModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="answerModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="continueBtn" data-bs-dismiss="modal">
+                    Продовжити
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Ініціалізуємо глобальний таймер вікторини
+    const totalQuizSeconds = parseInt(document.getElementById('total-seconds')?.value || '0');
+    const quizId = '{{ quiz.id }}';
+    
+    if (totalQuizSeconds > 0 && window.QuizTimer) {
+        window.QuizTimer.init(quizId, totalQuizSeconds);
+    }
+    
+    // Елементи для поточного питання
+    const timerElement = document.getElementById('timer');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const questionId = document.getElementById('question-id')?.value;
+    const hasTimeLimit = document.getElementById('has-time-limit')?.value === 'true';
+    const totalSeconds = parseInt(document.getElementById('total-seconds')?.value || '0');
+    const csrfToken = document.getElementById('csrf-token')?.value;
+    const nextQuestionUrl = document.getElementById('next-question-url')?.value;
+    const resultsUrl = document.getElementById('results-url')?.value;
+    const submitAnswerUrl = document.getElementById('submit-answer-url')?.value;
+    
+    // Змінні для таймера питання
+    let questionTimeLeft = totalSeconds;
+    let questionTimerInterval = null;
+    let answerSubmitted = false;
+    
+    // Запускаємо таймер питання якщо потрібно
+    if (hasTimeLimit && totalSeconds > 0) {
+        updateQuestionTimerDisplay();
+        questionTimerInterval = setInterval(function() {
+            questionTimeLeft--;
+            updateQuestionTimerDisplay();
+            
+            if (questionTimeLeft <= 0) {
+                clearInterval(questionTimerInterval);
+                if (!answerSubmitted) {
+                    alert('Час вийшов! Переходимо до наступного питання.');
+                    if (nextQuestionUrl) {
+                        window.location.href = nextQuestionUrl;
+                    } else {
+                        window.location.href = resultsUrl;
+                    }
+                }
+            }
+        }, 1000);
+    } else if (timerElement) {
+        timerElement.style.display = 'none';
+    }
+    
+    // Оновлення відображення таймера питання
+    function updateQuestionTimerDisplay() {
+        if (!timerElement) return;
+        if (questionTimeLeft < 0) questionTimeLeft = 0;
+        
+        const hours = Math.floor(questionTimeLeft / 3600);
+        const minutes = Math.floor((questionTimeLeft % 3600) / 60);
+        const seconds = questionTimeLeft % 60;
+        
+        let timeString = '';
+        if (hours > 0) {
+            timeString = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        timerElement.textContent = `Час: ${timeString}`;
+        
+        // Змінюємо колір коли мало часу
+        if (questionTimeLeft < 10) {
+            timerElement.classList.add('text-danger');
+        }
+    }
+    
+    // Обробка кліку на відповідь
+    if (answerBtns.length > 0) {
+        answerBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (answerSubmitted) return;
+                
+                const answerId = this.dataset.answerId;
+                answerSubmitted = true;
+                
+                // Вимикаємо всі кнопки
+                answerBtns.forEach(b => {
+                    b.disabled = true;
+                    b.classList.remove('btn-outline-primary');
+                    b.classList.add('btn-secondary');
+                });
+                
+                // Вимикаємо таймер питання
+                if (questionTimerInterval) {
+                    clearInterval(questionTimerInterval);
+                }
+                
+                // Час, витрачений на відповідь
+                const timeSpent = hasTimeLimit ? (totalSeconds - questionTimeLeft) : 0;
+                
+                // Відправляємо відповідь на сервер
+                fetch(submitAnswerUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: `question_id=${questionId}&answer_id=${answerId}&time_spent=${timeSpent}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Показуємо результат
+                        const modalTitle = document.getElementById('answerModalTitle');
+                        const modalHeader = document.getElementById('answerModalHeader');
+                        const modalBody = document.getElementById('answerModalBody');
+                        
+                        if (data.is_correct) {
+                            modalHeader.className = 'modal-header bg-success text-white';
+                            modalTitle.textContent = 'Правильно!';
+                            modalBody.innerHTML = `<p class="text-center">Ви отримали 10 балів!</p>
+                                                   <p class="text-center">Ваш рахунок: ${data.score}</p>`;
+                        } else {
+                            modalHeader.className = 'modal-header bg-danger text-white';
+                            modalTitle.textContent = 'Неправильно';
+                            modalBody.innerHTML = `<p class="text-center">Правильна відповідь: <strong>${data.correct_answer}</strong></p>
+                                                   <p class="text-center">Ваш рахунок: ${data.score}</p>`;
+                        }
+                        
+                        const modal = new bootstrap.Modal(document.getElementById('answerModal'));
+                        modal.show();
+                        
+                        // Обробка кнопки "Продовжити"
+                        document.getElementById('continueBtn').onclick = function() {
+                            if (nextQuestionUrl) {
+                                window.location.href = nextQuestionUrl;
+                            } else {
+                                window.location.href = resultsUrl;
+                            }
+                        };
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Помилка при відправці відповіді');
+                });
+            });
+        });
+    }
+})();
+</script>
+{% endblock %}
