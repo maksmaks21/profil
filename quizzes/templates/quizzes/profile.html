@@ -47,12 +47,12 @@
     </div>
 
     <!-- Мої вікторини -->
-    <div class="row">
+    <div class="row mt-4" id="my-quizzes-section">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Мої вікторини</h4>
-                    <a href="#" class="btn btn-light btn-sm">
+                    <a href="{% url 'create_quiz' %}" class="btn btn-light btn-sm">
                         <i class="bi bi-plus-circle"></i> Створити нову
                     </a>
                 </div>
@@ -122,4 +122,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMComtentLoaded', function(){
+        if (window.location.hash === '#my-quizzes-section'){
+            const section = document.getElementById('my-quizzes-section');
+            if (section) {
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+    })
+</script>
 {% endblock %}

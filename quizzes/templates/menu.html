@@ -21,7 +21,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'my_quizzes' %}">Мої вікторини</a>
+                        <a class="nav-link" href="{% url 'profile' %}#my-quizzes-section">Мої вікторини</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}">Мій профіль</a>
@@ -37,7 +37,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'profile' %}">Мій профіль</a></li>
-                            <li><a class="dropdown-item" href="{% url 'my_quizzes' %}">Мої вікторини</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile' %}#my-quizzes-section">Мої вікторини</a></li>
                             <li><a class="dropdown-item" href="#">Мої результати</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Вийти</a></li>

@@ -1,25 +1,172 @@
+/* === ГЛОБАЛЬНІ СТИЛІ === */
+
 body {
-    background-color: #f8f9fa;
+    background-color: #494949;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
 }
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+/* Навігація */
+.navbar, .novbar {
+    background: linear-gradient(135deg, #5c0000 0%, #000000 100%);
+    box-shadow: 0 2px 4px rgb(83, 1, 1);
+}
+
+.navbar-brand, .nav-link {
+    color: white !important
+}
+
+.nav-link:hover {
+    color: #ffcccc !important;
+}
+
+/* Кнопки */
+.btn-primary {
+    background: linear-gradient(135deg, #5c0000 0%, #000000 100%);
+    border: none;
     color: white;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #7a0000 0%, #1a1a1a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8 px rgb(92 0 0);
+}
+
+.btn-success{
+    background: linear-gradient(135deg, #2d5c00 0%, #1a3a00 100%);
+    border: none;
+}
+
+.btn-outline-primary {
+    color: #5c0000;
+    border-color: #5c0000;
+}
+
+.btn-outline-primary:hover {
+    color: #5c0000;
+    border-color: #5c0000;
+}
+
+/* Картки */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgb(83, 1, 1);
+    background-color: #333333;
+    color: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.quiz-card:hover{
+    transform: translateY(-5px);
+    box-shadow: none;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #5c0000 0%, #330000 100%) ;
+    color: white;
+    border-bottom: none;
+}
+
+/* Текст */
+.text-muted {
+    color: #cccccc !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+/* Алерти */
+.alert{
+    background-color: #404040;
+    color: white;
+    border: 1px solid #5c0000;
+}
+.alert-info{
+    background-color: #1a4d5c;
+    border-color: #0d3b47;
+}
+.alert-success{
+    background-color: #1d5c1d;
+    border-color: #0f3f0f;
+}
+
+.alert-dunger{
+    background-color: #5c1a1a;
+    border-color: #3f0f0f;
+}
+/* === СТИЛІ ДЛЯ ГОЛОВНОЇ СТОРІНКИ === */
+.header {
+    background: linear-gradient(135deg, #5c0000 0%, #000000 100%);
+    color: rgb(255, 255, 255);
     padding: 60px 0;
     margin-bottom: 40px;
+    text-align: center;
 }
+
 .quiz-card {
     transition: transform 0.3s;
     margin-bottom: 20px;
     border: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #3a3a3a;
 }
+
 .quiz-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quiz-card .card-text{
+    color: #dddddd;
+    flex-grow: 1;
+}
+
+.quiz-card .card-title{
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.quize-meta{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #bbbbbb;
+}
+
+.quiz-meta i {
+    color: #ff6b6b;
+    margin-right: 5px;
+}
+/* === СТИЛІ ДЛЯ ДЕТАЛЬНОЇ СТОРІНКИ ВІКТОРИНИ === */
+
+.quiz-header {
+    background: linear-gradient(135deg, #000000 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 0;
+    margin-bottom: 30px;
 }
 
 
-/* Круглий таймер */
+/* Іконки для інструкції */
+/* === СТИЛІ ДЛЯ ПРОФІЛЮ === */
+/* Таблиця вікторин */
+
+/* === СТИЛІ ДЛІ СТОРІНКИ ГРИ === */
+/* Кнопки відповідей */
+/* Прогрес-бар */
+/* === СТИЛІ ДЛЯ СТОРІНКИ РЕЗУЛЬТАТІВ === */
+/* Таблиця рейтингу */
+
+/* === КРУГЛИЙ ТАЙМЕР === */
 #quiz-timer-container {
     position: fixed;
     top: 20px;
@@ -33,6 +180,7 @@ body {
         transform: translateY(-100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -44,7 +192,7 @@ body {
     height: 80px;
     background: white;
     border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     padding: 5px;
 }
 
@@ -84,19 +232,21 @@ body {
 .timer-progress.danger {
     stroke: #f44336;
 }
+/* === ФУТЕР === */
 
-/* Адаптація для мобільних */
+
+/* === АДАПТАЦІЯ ДЛЯ МОБІЛЬНИХ === */
 @media (max-width: 768px) {
     #quiz-timer-container {
         top: 10px;
         right: 10px;
     }
-    
+
     .circular-timer {
         width: 60px;
         height: 60px;
     }
-    
+
     .timer-text {
         font-size: 10px;
     }
