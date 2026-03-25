@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block body_class %}play-page{% endblock %}
+
 {% block title %}{{ quiz.title }} - Онлайн-вікторина{% endblock %}
 
 {% block content %}
@@ -15,7 +17,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="card info-card mb-4" style="border: none; box-shadow: 0 4px 6px rgb(255, 0, 0);">
+            <div class="card info-card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Інформація про вікторину</h5>
                     <hr>
@@ -58,15 +60,15 @@
                     <hr>
                     <div class="row">
                         <div class="col-md-4 text-center mb-3">
-                            <i class="bi bi-1-circle-fill" style="font-size: 2rem; color: #667eea;"></i>
+                            <i class="bi bi-1-circle-fill" ></i>
                             <p>Натисніть "Почати"</p>
                         </div>
                         <div class="col-md-4 text-center mb-3">
-                            <i class="bi bi-2-circle-fill" style="font-size: 2rem; color: #667eea;"></i>
+                            <i class="bi bi-2-circle-fill"></i>
                             <p>Відповідайте на питання</p>
                         </div>
                         <div class="col-md-4 text-center mb-3">
-                            <i class="bi bi-3-circle-fill" style="font-size: 2rem; color: #667eea;"></i>
+                            <i class="bi bi-3-circle-fill"></i>
                             <p>Отримайте результат</p>
                         </div>
                     </div>

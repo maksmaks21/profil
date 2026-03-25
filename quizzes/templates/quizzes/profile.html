@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block body_class %}play-page{% endblock %}
+
 {% block title %}Профіль {{ user.username }} - Онлайн-вікторина{% endblock %}
 
 {% block content %}
@@ -7,9 +9,9 @@
     <!-- Заголовок профілю -->
     <div class="row">
         <div class="col-12">
-            <div class="card bg-primary text-white mb-4">
+            <div class="card profile-header mb-4">
                 <div class="card-body text-center">
-                    <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
+                    <i class="bi bi-person-circle profile-avatar"></i>
                     <h2 class="mt-2">{{ user.username }}</h2>
                     <p class="lead">{{ user.email }}</p>
                     <p class="small">Зареєстрований: {{ user.date_joined|date:"d.m.Y" }}</p>
@@ -21,10 +23,10 @@
     <!-- Статистика -->
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card text-center stat-card">
                 <div class="card-body">
-                    <h3 class="display-4">{{ total_quizzes }}</h3>
-                    <p class="text-muted">Створено вікторин</p>
+                    <h3 class="stat-number">{{ total_quizzes }}</h3>
+                    <p class="stat-label">Створено вікторин</p>
                 </div>
             </div>
         </div>
@@ -96,7 +98,7 @@
                     {% else %}
                         <div class="alert alert-info text-center">
                             <p class="mb-2">У вас ще немає створених вікторин</p>
-                            <a href="#" class="btn btn-success">
+                            <a href="{% url 'create_quiz' %}" class="btn btn-success">
                                 <i class="bi bi-plus-circle"></i> Створити першу вікторину
                             </a>
                         </div>

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block body_class %}play-page{% endblock %}
+
 {% block title %}{{ quiz.title }} - Питання {{ question_index|add:1 }}{% endblock %}
 
 {% block content %}

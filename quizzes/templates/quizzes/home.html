@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block body_class %}play-page{% endblock %}
+
 {% block content %}
 <!-- Шапка сайту -->
 <div class="header text-center">
@@ -73,7 +75,7 @@
                             </div>
                             
                             <a href="{% url 'quiz_detail' quiz.id %}" class="btn btn-primary w-100 mt-3">
-                                <i class="bi bi-play-fill"></i> Почати
+                                <i class="bi bi-play-fill"></i> Переглянути
                             </a>
                         </div>
                     </div>
@@ -95,10 +97,10 @@
 </div>
 
 <!-- Футер -->
-<footer class="bg-light text-center py-3 mt-5">
+<footer class="footer">
     <div class="container">
-        <p class="text-muted mb-0">
-            &copy; {% now "Y" %} Онлайн-вікторина. Всі права захищені. вірим)
+        <p class="mb-0 text-center">>
+            &copy; {% now "Y" %} <span class="brand">Онлайн-вікторина</span>. Всі права захищені. вірим)
         </p>
     </div>
 </footer>
